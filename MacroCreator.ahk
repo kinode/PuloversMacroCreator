@@ -1993,7 +1993,22 @@ If (CurrentFileName = "")
 	GoSub, SelectFile
 IfExist %CurrentFileName%
 {
-    FileDelete %CurrentFileName%
+	if(AutoBackup = -1)
+	{
+		SplitPath, CurrentFileName, name, dir, ext, name_no_ext, drive
+		Loop
+		{
+			bak_name := dir "\" name_no_ext "." A_Index ".bak"
+			If !(FileExist(bak_name))
+				break
+		}
+		FileMove, %CurrentFileName%, %bak_name%
+	}
+    Else
+	{
+		FileDelete %CurrentFileName%
+	}
+	
     If (ErrorLevel)
     {
         MsgBox, 16, %d_Lang007%, %d_Lang006%`n`n"%CurrentFileName%".
@@ -2048,7 +2063,14 @@ return
 ProjBackup:
 If !(SavePrompt)
 	return
-FileDelete, %SettingsFolder%\~ActiveProject.pmc
+If (AutoBackup = 1)
+	bak_name := SettingsFolder "\~ActiveProject.pmc"
+Else
+{
+	SplitPath, CurrentFileName, name, dir, ext, name_no_ext, drive
+	bak_name := dir "\" name_no_ext ".bak.pmc"
+}
+FileDelete, % bak_name
 All_Data := ""
 Loop, %TabCount%
 {
@@ -2060,7 +2082,8 @@ Loop, %TabCount%
 ,	LV_Data := PMCSet . TabGroups . PMC.LVGet("InputList" A_Index).Text . "`n"
 ,	All_Data .= LV_Data
 }
-FileAppend, %All_Data%, %SettingsFolder%\~ActiveProject.pmc
+FileAppend, %All_Data%, % bak_name
+
 LVManager.SetHwnd(ListID%A_List%)
 return
 
@@ -2855,7 +2878,7 @@ Gui, 4:Add, Listbox, W160 H310 vAltTab gAltTabControl AltSubmit, %t_Lang018%||%t
 Gui, 4:Add, Tab2, yp x+0 W400 H0 vTabControl gAltTabControl AltSubmit, General|Recording|Playback|Defaults|Screenshots|Email|Language|LangEditor|UserVars|SubmitRev
 ; General
 Gui, 4:Add, GroupBox, Section ym xm+170 W400 H175, %t_Lang018%:
-Gui, 4:Add, Checkbox, -Wrap Checked%AutoBackup% vAutoBackup W380 ys+20 xs+10 R1, %t_Lang152%
+Gui, 4:Add, Checkbox, -Wrap Check3 Checked%AutoBackup% vAutoBackup W380 ys+20 xs+10 R1, %t_Lang152%
 Gui, 4:Add, Checkbox, -Wrap Checked%ShowBarOnStart% W380 vShowBarOnStart R1, %t_Lang085%
 Gui, 4:Add, Checkbox, -Wrap Checked%MultInst% vMultInst W380 R1, %t_Lang089%
 Gui, 4:Add, Checkbox, -Wrap Checked%TbNoTheme% vTbNoTheme W380 R1, %t_Lang142%
