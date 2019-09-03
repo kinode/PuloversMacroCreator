@@ -8142,7 +8142,9 @@ Gui, 21:Add, Text, -Wrap yp xs+10 W430 R6 vExpTxt Hidden, %d_Lang097%
 Gui, 21:Add, Edit, yp+20 xs+10 W430 R4 -vScroll vTestVar2 Disabled
 Gui, 21:Add, Text, -Wrap R1 W430 cGray vVarTxt, %c_Lang025%
 Gui, 21:Add, Link, -Wrap xp yp W430 R1 vExprLink1 gExprLink Hidden, <a>%c_Lang091%</a>
-Gui, 21:Add, Groupbox, Section xs y+15 W450 H50, %c_Lang123%:
+Gui, 21:Add, GroupBox, Section xm y+22 W450 H70, %t_Lang064%:
+Gui, 21:Add, Edit, ys+20 xs+10 vCommSt W430 r2
+Gui, 21:Add, Groupbox, Section xs y+25 W450 H50, %c_Lang123%:
 Gui, 21:Add, Button, -Wrap ys+18 xs+85 W75 H23 vAddElse gAddElse, %c_Lang083%
 Gui, 21:Add, Button, -Wrap Section Default xm y+14 W75 H23 gIfOK, %c_Lang020%
 Gui, 21:Add, Button, -Wrap ys W75 H23 gIfCancel, %c_Lang021%
@@ -8162,7 +8164,9 @@ Gui, 21:Add, Edit, y+10 xs+10 W430 H110 vVarValue
 Gui, 21:Add, Text, -Wrap R1 W430 cGray vVarTip, %c_Lang025%
 Gui, 21:Add, Link, -Wrap xp yp W430 R1 vExprLink2 gExprLink Hidden, <a>%c_Lang091%</a>
 Gui, 21:Add, Text, -Wrap R1 y+5 W430 cGray vArrayTip Hidden, %c_Lang206%
-Gui, 21:Add, Groupbox, Section xs y+14 W450 H50, %c_Lang010%:
+Gui, 21:Add, GroupBox, Section xm y+22 W450 H70, %t_Lang064%:
+Gui, 21:Add, Edit, ys+20 xs+10 vCommV W430 r2
+Gui, 21:Add, Groupbox, Section xs y+24 W450 H50, %c_Lang010%:
 Gui, 21:Add, Button, -Wrap ys+18 xs+85 W75 H23 vVarCopyA gVarCopy, %c_Lang023%
 Gui, 21:Add, Button, -Wrap x+10 yp W75 H23 gReset, %c_Lang088%
 Gui, 21:Add, Button, -Wrap Section xm y+14 W75 H23 vVarOK gVarOK, %c_Lang020%
@@ -8185,7 +8189,9 @@ Gui, 21:Add, Button, -Wrap W25 yp-1 x+5 hwndFuncHelp vFuncHelp gFuncHelp Disable
 Gui, 21:Add, Text, -Wrap R1 W430 y+11 xs+10, %c_Lang090%:
 Gui, 21:Add, Edit, W430 R1 -Multi vVarValueF
 Gui, 21:Add, Text, -Wrap R1 W430 vFuncTip
-Gui, 21:Add, Groupbox, Section xs y+12 W450 H50, %c_Lang010%:
+Gui, 21:Add, GroupBox, Section xm y+22 W450 H70, %t_Lang064%:
+Gui, 21:Add, Edit, ys+20 xs+10 vCommF W430 r2
+Gui, 21:Add, Groupbox, Section xs y+22 W450 H50, %c_Lang010%:
 Gui, 21:Add, Button, -Wrap ys+18 xs+85 W75 H23 vVarCopyB gVarCopy, %c_Lang023%
 Gui, 21:Add, Button, -Wrap x+10 yp W75 H23 gReset, %c_Lang088%
 Gui, 21:Add, Button, -Wrap Section xm y+14 W75 H23 vFuncOK gVarOK, %c_Lang020%
@@ -8244,6 +8250,8 @@ If (s_Caller = "Edit")
 		GuiControl, 21:, TabControl, $%c_Lang009%
 		GoSub, CoOper
 		GuiTitle := c_Lang009
+		StringReplace, Comment, Comment, `n, %A_Space%, All
+		GuiControl, 21:, CommSt, %Comment%
 	}
 	Else If (A_ThisLabel = "EditVar")
 	{
@@ -8262,6 +8270,8 @@ If (s_Caller = "Edit")
 		GuiControl, 21:, VarValue, %VarValue%
 		SBShowTip("Variable")
 		GoSub, AsOper
+		StringReplace, Comment, Comment, `n, %A_Space%, All
+		GuiControl, 21:, CommV, %Comment%
 	}
 	Else If (A_ThisLabel = "EditFunc")
 	{
@@ -8299,6 +8309,8 @@ If (s_Caller = "Edit")
 			GuiControl, 21:, FuncName, %FuncName%$$
 		}
 		GoSub, FuncName
+		StringReplace, Comment, Comment, `n, %A_Space%, All
+		GuiControl, 21:, CommF, %Comment%
 	}
 	GuiControl, 21:Enable, IfApply
 	GuiControl, 21:Enable, VarApplyA
@@ -8411,19 +8423,21 @@ If (A_ThisLabel != "IfApply")
 	Gui, 21:Destroy
 }
 Gui, chMacro:Default
+StringReplace, CommSt, CommSt, `n, %A_Space%, All
+Comment := CommSt
 RowSelection := LV_GetCount("Selected"), LV_GetText(RowType, LV_GetNext(), 6)
 If (s_Caller = "Edit")
-	LV_Modify(RowNumber, "Col2", Statement, TestVar, 1, 0, cType17, Target)
+	LV_Modify(RowNumber, "Col2", Statement, TestVar, 1, 0, cType17, Target,,Comment)
 Else If ((RowSelection = 0) || ((RowType = cType47) || RowType = cType48))
 {
-	LV_Add("Check", ListCount%A_List%+1, Statement, TestVar, 1, 0, cType17, Target)
+	LV_Add("Check", ListCount%A_List%+1, Statement, TestVar, 1, 0, cType17, Target,,Comment)
 	If (!ElseIf)
 		LV_Add("Check", ListCount%A_List%+2, "[End If]", "EndIf", 1, 0, cType17)
 	LV_Modify(ListCount%A_List%+2, "Vis")
 }
 Else
 {
-	LV_Insert(LV_GetNext(), "Check",, Statement, TestVar, 1, 0, cType17, Target)
+	LV_Insert(LV_GetNext(), "Check",, Statement, TestVar, 1, 0, cType17, Target,,Comment)
 ,	LVManager.InsertAtGroup(LV_GetNext() - 1), RowNumber := 0, LastRow := 0
 	Loop
 	{
@@ -8480,6 +8494,13 @@ If (TabControl = 3)
 	VarName := VarNameF
 	If (VarName = "")
 		VarName := "_null"
+	StringReplace, CommF, CommF, `n, %A_Space%, All
+	Comment := CommF
+}
+Else
+{
+	StringReplace, CommV, CommV, `n, %A_Space%, All
+	Comment := CommV
 }
 If (VarName = "")
 {
@@ -8537,15 +8558,15 @@ If (A_ThisLabel != "VarApply")
 Gui, chMacro:Default
 RowSelection := LV_GetCount("Selected"), LV_GetText(RowType, LV_GetNext(), 6)
 If (s_Caller = "Edit")
-	LV_Modify(RowNumber, "Col2", Action, Details, TimesX, DelayX, Type, Target)
+	LV_Modify(RowNumber, "Col2", Action, Details, TimesX, DelayX, Type, Target,,Comment)
 Else If ((RowSelection = 0) || ((RowType = cType47) || RowType = cType48))
 {
-	LV_Add("Check", ListCount%A_List%+1, Action, Details, 1, 0, Type, Target)
+	LV_Add("Check", ListCount%A_List%+1, Action, Details, 1, 0, Type, Target,,Comment)
 	LV_Modify(ListCount%A_List%+1, "Vis")
 }
 Else
 {
-	LV_Insert(LV_GetNext(), "Check",, Action, Details, 1, 0, Type, Target)
+	LV_Insert(LV_GetNext(), "Check",, Action, Details, 1, 0, Type, Target,,Comment)
 ,	LVManager.InsertAtGroup(LV_GetNext())
 }
 GoSub, RowCheck
