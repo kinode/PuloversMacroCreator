@@ -710,7 +710,7 @@ Loop, Parse, ColSizes, `,
 	Col_%A_Index% := A_LoopField
 Loop, Parse, ShowBands, `,
 	ShowBand%A_Index% := A_LoopField
-
+ 
 RegRead, DClickSpd, HKEY_CURRENT_USER, Control Panel\Mouse, DoubleClickSpeed
 DClickSpd := Round(DClickSpd * 0.001, 1)
 
@@ -13124,8 +13124,8 @@ GuiControl, 1:Enable, AutoKey
 GuiControl, 1:Show, AutoKey
 GuiControl, 1:Hide, JoyKey
 GuiControl, 1:Enable, WinKey
-ActivateHotkeys(,,,,, 0), TB_Edit(TbSettings, "WinKey", 0, 1)
-,	aBand := RbMain.IDToIndex(7)
+;ActivateHotkeys(,,,,, 0), TB_Edit(TbSettings, "WinKey", 0, 1)
+aBand := RbMain.IDToIndex(7)
 ,	RbMain.GetBand(aBand,,, bSize,,,, cChild)
 If (cChild != hAutoKey)
 	RbMain.ModifyBand(aBand, "Child", hAutoKey), RbMain.SetBandWidth(aBand, bSize)
