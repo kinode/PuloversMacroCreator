@@ -198,6 +198,7 @@ IniRead, SpeedUp, %IniFilePath%, Options, SpeedUp, 2
 IniRead, SpeedDn, %IniFilePath%, Options, SpeedDn, 2
 IniRead, HideErrors, %IniFilePath%, Options, HideErrors, 0
 IniRead, MouseReturn, %IniFilePath%, Options, MouseReturn, 0
+IniRead, ShowOnPlayback, %IniFilePath%, Options, ShowOnPlayback, 0
 IniRead, ShowProgBar, %IniFilePath%, Options, ShowProgBar, 1
 IniRead, ShowBarOnStart, %IniFilePath%, Options, ShowBarOnStart, 0
 IniRead, AutoHideBar, %IniFilePath%, Options, AutoHideBar, 0
@@ -2963,6 +2964,7 @@ Gui, 4:Add, GroupBox, Section y+16 xs W400 H128, %w_Lang003%:
 Gui, 4:Add, Checkbox, -Wrap R1 Checked%ShowStep% ys+20 xs+10 W380 vShowStep, %t_Lang100%
 Gui, 4:Add, Checkbox, -Wrap R1 Checked%HideErrors% W380 vHideErrors, %t_Lang206%
 Gui, 4:Add, Checkbox, -Wrap R1 Checked%MouseReturn% W380 vMouseReturn, %t_Lang038%
+Gui, 4:Add, Checkbox, -Wrap R1 Checked%ShowOnPlayback% W380 vShowOnPlayback, %t_Lang123%
 Gui, 4:Add, Checkbox, -Wrap R1 Checked%AutoHideBar% W380 vAutoHideBar, %t_Lang143%
 Gui, 4:Add, Checkbox, -Wrap R1 Checked%RandomSleeps% W200 vRandomSleeps gOptionsSub, %t_Lang107%
 Gui, 4:Add, Edit, Limit Number yp-2 x+0 W50 R1 vRandPer
@@ -11102,10 +11104,13 @@ Gui, chMacro:ListView, InputList%A_List%
 ActivateHotkeys(0, 0, 1, 1, 1)
 StopIt := 0
 Tooltip
-If (!(PlayHK) && !(HideWin) && (HideMainWin))
-	GoSub, ShowHide
-Else
-	WinMinimize, ahk_id %PMCWinID%
+If !(ShowOnPlayback)
+{
+	If (!(PlayHK) && !(HideWin) && (HideMainWin))
+		GoSub, ShowHide
+	Else
+		WinMinimize, ahk_id %PMCWinID%
+}
 aHK_On := [A_List]
 GoSub, f_RunMacro
 return
@@ -14112,6 +14117,7 @@ SpeedUp := 2
 SpeedDn := 2
 HideErrors := 0
 MouseReturn := 0
+ShowOnPlayback := 0
 ShowProgBar := 1
 ShowBarOnStart := 0
 AutoHideBar := 0
@@ -14467,6 +14473,7 @@ IniWrite, %SpeedUp%, %IniFilePath%, Options, SpeedUp
 IniWrite, %SpeedDn%, %IniFilePath%, Options, SpeedDn
 IniWrite, %HideErrors%, %IniFilePath%, Options, HideErrors
 IniWrite, %MouseReturn%, %IniFilePath%, Options, MouseReturn
+IniWrite, %ShowOnPlayback%, %IniFilePath%, Options, ShowOnPlayback
 IniWrite, %ShowProgBar%, %IniFilePath%, Options, ShowProgBar
 IniWrite, %ShowBarOnStart%, %IniFilePath%, Options, ShowBarOnStart
 IniWrite, %AutoHideBar%, %IniFilePath%, Options, AutoHideBar
@@ -15033,6 +15040,7 @@ Menu, PlayOptMenu, Add
 Menu, PlayOptMenu, Add, %t_Lang100%, PlayOpt
 Menu, PlayOptMenu, Add, %t_Lang206%, PlayOpt
 Menu, PlayOptMenu, Add, %t_Lang038%, PlayOpt
+Menu, PlayOptMenu, Add, %t_Lang123%, PlayOpt
 Menu, PlayOptMenu, Add, %t_Lang085%, PlayOpt
 Menu, PlayOptMenu, Add, %t_Lang143%, PlayOpt
 Menu, PlayOptMenu, Add, %t_Lang107%, PlayOpt
@@ -15584,6 +15592,11 @@ If (MouseReturn)
 	Menu, PlayOptMenu, Check, %t_Lang038%
 Else
 	Menu, PlayOptMenu, Uncheck, %t_Lang038%
+
+If (ShowOnPlayback)
+	Menu, PlayOptMenu, Check, %t_Lang123%
+Else
+	Menu, PlayOptMenu, Uncheck, %t_Lang123%
 
 If (ShowBarOnStart)
 	Menu, PlayOptMenu, Check, %t_Lang085%
