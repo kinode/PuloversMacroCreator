@@ -123,7 +123,7 @@ MAction1 := "Click"
 RecOptChecks := ["ClearNewList", "", "Strokes", "CaptKDn", "RecKeybdCtrl"
 					, "", "Mouse", "MScroll", "Moves", "RecMouseCtrl"
 					, "", "TimedI", "WClass", "WTitle"]
-,	PlayOptChecks := ["ShowStep", "HideErrors", "MouseReturn", "ShowOnPlayback", "ShowBarOnStart", "AutoHideBar", "RandomSleeps"]
+,	PlayOptChecks := ["ShowStep", "HideErrors", "MouseReturn", "ShowOnPlayback", "RecordPlayMode", "ShowBarOnStart", "AutoHideBar", "RandomSleeps"]
 ,	OnFinishCode := 1
 ,	CopyMenuLabels := []
 ,	ScopedVars := {}
