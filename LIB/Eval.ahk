@@ -180,7 +180,7 @@ Eval($x, _CustomVars := "", _Init := true)
 				ObjName := RegExReplace($pd . _i, "\W", "_")
 				If (IsObject(_v))
 					_Objects[ObjName] := _v
-				Else If _v is not Number
+				Else If (_v) is not Number
 				{
 					If (_oMatch[_i] != "")
 					{
