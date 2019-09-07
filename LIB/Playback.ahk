@@ -822,12 +822,39 @@
 							}
 						}
 					}
-							
+
 					pbParams := Eval(VarValue, PlaybackVars[LoopDepth][mLoopIndex])
 					Try
 					{
-						VarValue := %Action%(pbParams*)
-					,	AssignVar(VarName, ":=", VarValue, PlaybackVars[LoopDepth][mLoopIndex], RunningFunction)
+						If (Action = "RegExMatch")
+						{
+							_key := RegExReplace(VarValue, "sU)"".*""", "")
+							_key := StrSplit(_key, ",", " `t")
+							_key := _key[3]				
+							VarValue := RegExMatch(pbParams[1],pbParams[2], _point, pbParams[4] ? pbParams[4] : 1)
+							AssignVar(VarName, ":=", VarValue, PlaybackVars[LoopDepth][mLoopIndex], RunningFunction)
+							
+							; Mode 3 (match object) with O)
+							If RegExMatch(pbParams[2], "^[a-z]*O[a-z]*\)")
+							{
+								AssignVar(_key, ":=", _point , PlaybackVars[LoopDepth][mLoopIndex], RunningFunction)
+							}
+							; Mode 1 (default)
+							Else If (_key) 
+								Loop
+								{
+									_value := "_point" A_Index
+									_value := %_value%
+									If !(_value)
+										break
+									AssignVar(_key A_Index, ":=", _value , PlaybackVars[LoopDepth][mLoopIndex], RunningFunction)
+								}
+						}
+						Else
+						{
+							VarValue := %Action%(pbParams*)
+						,	AssignVar(VarName, ":=", VarValue, PlaybackVars[LoopDepth][mLoopIndex], RunningFunction)
+						}
 					}
 					Catch e
 					{
